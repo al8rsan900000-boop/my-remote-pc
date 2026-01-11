@@ -1,16 +1,15 @@
-name: Windows-Free-RDP
+name: Windows-Desktop
 on: workflow_dispatch
 
 jobs:
   build:
     runs-on: windows-latest
     steps:
-    - name: Setup Windows
+    - name: Prepare Windows
       run: |
-        net user runneradmin MyPassword123! /add
+        net user runneradmin Password123! /add
         net localgroup administrators runneradmin /add
-        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
-    - name: Install Tunnel
-      run: npm install -g localtunnel
-    - name: Run Remote
-      run: lt --port 3389
+    - name: Start Tunnel
+      run: |
+        npm install -g localtunnel
+        lt --port 3389
