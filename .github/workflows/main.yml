@@ -1,12 +1,17 @@
-name: Windows-RDP
+name: Remote-Desktop
 on: workflow_dispatch
 
 jobs:
   build:
     runs-on: windows-latest
     steps:
-    - name: Setting Up
+    - name: Enable RDP
       run: |
-        echo "Starting..."
-    - name: Setup Tmate
-      uses: mxschmitt/action-tmate@v3
+        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
+        Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+        net user runneradmin Password123! /add
+        net localgroup administrators runneradmin /add
+    - name: Install Localtunnel
+      run: npm install -g localtunnel
+    - name: Start Tunnel
+      run: lt --port 3389
