@@ -1,17 +1,16 @@
-name: Remote-Desktop
+name: Windows-Free-RDP
 on: workflow_dispatch
 
 jobs:
   build:
     runs-on: windows-latest
     steps:
-    - name: Enable RDP
+    - name: Setup Windows
       run: |
-        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
-        Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
-        net user runneradmin Password123! /add
+        net user runneradmin MyPassword123! /add
         net localgroup administrators runneradmin /add
-    - name: Install Localtunnel
+        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
+    - name: Install Tunnel
       run: npm install -g localtunnel
-    - name: Start Tunnel
+    - name: Run Remote
       run: lt --port 3389
